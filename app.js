@@ -8,11 +8,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+// Parse Cookie header and populate req.cookies with an object keyed by the cookie names. 
 app.use(cookieParser());
 
 // How to use a separated router: express.Router
 var birds = require('./birds');
-app.use('/birds', birds);
+// Véase http://expressjs.com/api.html#app.use
+// Es posible usar regexp en el path
+app.use('/birds', birds);  // mount the sub app
 
 // a middleware mounted on /usuario/:id; will be executed for any type of HTTP request to /usuario/:id
 // visit: http://localhost:3000/usuario/casiano
@@ -42,6 +45,8 @@ app.get('/chuchu/:id', function (req, res, next) {
 
 // handler for /chuchu/:id which prints the chuchu id
 app.get('/chuchu/:id', function (req, res, next) {
+  // res.end([data] [, encoding])
+  // Ends the response process. 
   res.end(req.params.id);
 });
 
@@ -61,6 +66,12 @@ app.get('/tata/:idx', function (req, res, next) {
   res.send('special');
 });
 
+// Véase http://expressjs.com/api.html#app.param
+/*
+ * app.param([name], callback)
+ If name is an array, the callback trigger is registered for each parameter declared in it, in the order in which they are declared. 
+ Furthermore, for each declared parameter except the last one, a call to next inside the callback will call the callback for the next declared parameter. For the last parameter, a call to next will call the next middleware in place for the route currently being processed, just like it would if name were just a string.
+*/
 app.param('idx', function (req, res, next, idx) {
   console.log('CALLED ONLY ONCE '+req.params.idx);
   next();
@@ -84,11 +95,16 @@ app.get('/', function (req, res) {
 
 //json
 app.get('/json', function(req, res) {
+  // Sends a JSON response. 
+  // This method is identical to res.send() with an object or array as the parameter. 
+  // However, you can use it to convert other values to JSON, such as null, and undefined. 
+  // (although these are technically not valid JSON).)
   res.json({ user: 'tobi'});
 });
 
 // another way to respond with json
 app.get('/json2', function(req, res) {
+  // When the parameter is an Array or Object, Express responds with the JSON representation:
   res.send({ some: 'json' });
 });
 
