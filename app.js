@@ -2,6 +2,7 @@ var express = require('express')
 var app = express()
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var util = require('util');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -92,6 +93,12 @@ app.get('/', function (req, res) {
     '<br/><img src="images/kitten.jpg" />'
   );
 })
+
+/* regexp: visit pruebaregexp/dragonfly */
+app.get(/pruebaregexp\/.*fly$/, function(req, res) {
+  console.log(`req.url = ${util.inspect(req.url, null)}`);
+  res.send(`<h1>You visited <i>${req.url}</i></h1>`);
+});
 
 //json
 app.get('/json', function(req, res) {
